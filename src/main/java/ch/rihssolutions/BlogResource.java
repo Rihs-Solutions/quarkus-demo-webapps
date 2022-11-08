@@ -9,17 +9,24 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+
+import io.quarkus.logging.Log;
+
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 
 @Path("/blog")
 public class BlogResource {
 
-    // @Inject
-    // BlogDummyService blogService;
+    public record BlogOverviewDto(String title) {
+        public BlogOverviewDto(Blog blog) {
+            this(blog.title);
+        }
+    }
 
     @GET
-    public List<Blog> list() {
-        return Blog.listAll();
+    public List<BlogOverviewDto> list() {
+        Blog.listAll().forEach(b -> Log.infof("Blog: %s", b));
+        return Blog.streamAll().map(b -> new BlogOverviewDto((Blog) b)).toList();
     }
 
     @Transactional
@@ -27,6 +34,7 @@ public class BlogResource {
     @Operation(description = "Add new Blog-Post.")
     @RequestBody(content = @Content(mediaType = "application/json", example = "{ \"title\": \"title\", \"content\": \"content\" }"))
     public void addBlog(Blog blog) {
+        Log.infof("Blog: %s", blog.title);
         blog.persist();
     }
     
