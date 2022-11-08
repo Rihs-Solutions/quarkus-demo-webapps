@@ -1,9 +1,16 @@
 package ch.rihssolutions;
 
-public class Blog {
+import javax.json.bind.annotation.JsonbProperty;
+import javax.persistence.Entity;
 
-    private String title;
-    private String content;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
+@Entity
+public class Blog extends PanacheEntity {
+
+    @JsonbProperty("neuer-title")
+    public String title;
+    public String content;
 
     public Blog() {
     }
@@ -12,18 +19,4 @@ public class Blog {
         this.title = title;
         this.content = content;
     }
-
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getContent() {
-        return content;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
-    
 }
